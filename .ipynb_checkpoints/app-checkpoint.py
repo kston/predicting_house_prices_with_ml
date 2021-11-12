@@ -1,5 +1,10 @@
 import streamlit as st
 from datetime import date
+import pandas as pd
+import numpy as np
+
+import joblib
+
 
 st.title('Predicting House Price with ML')
 
@@ -92,9 +97,90 @@ div.stButton > button:first-child {
       font-size: 14px;
       margin: 4px 20px;
       position: relative;
-      padding: 5px 100px;
+      padding: 10px 100px;
+      font-weight: bold;
       
 }
 </style>""", unsafe_allow_html=True)
 
-b = st.sidebar.button("Predict")
+submit = st.sidebar.button("Predict")
+
+if submit:
+    st.success("Prediction Done")
+    features = [
+        MSSubClass,
+        MSZoning,
+        LotShape,
+        LandContour,
+        LotConfig,
+        Neighborhood,
+        GarageFinish,
+        PavedDrive,
+        SaleCondition,
+        FireplaceQu,
+        LotFrontage,
+        OverallQual,
+        OverallCond,
+        YearBuilt,
+        TotRmsAbvGrd,
+        WoodDeckSF,
+        ScreenPorch,
+        YrSold    
+    ]
+    
+    head = [
+        'MSSubClass',
+        'MSZoning',
+        'LotShape',
+        'LandContour',
+        'LotConfig',
+        'Neighborhood',
+        'GarageFinish',
+        'PavedDrive',
+        'SaleCondition',
+        'FireplaceQu',
+        'LotFrontage',
+        'OverallQual',
+        'OverallCond',
+        'YearBuilt',
+        'TotRmsAbvGrd',
+        'WoodDeckSF',
+        'ScreenPorch',
+        'YrSold'    
+    ]
+    
+    df=pd.DataFrame(features).transpose()
+    df.columns = head
+    st.markdown("<h3 style='text-align: center; color: black; display:block;'> Informed Datas</h3>", unsafe_allow_html=True)
+    st.dataframe(df)
+    
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: black; display:block;'> Predicted Price</h3>", unsafe_allow_html=True)
+    
+    # tranform categorical data
+    def transform_categorical(list):
+        for feature in list:
+            dict_key = globals()[f'{feature}_options']
+            df[feature] = dict_key[df[feature].values[0]]
+           
+    transform_categorical(['MSSubClass', 'MSZoning', 'GarageFinish', 'PavedDrive', 'SaleCondition'])       
+        
+    model = joblib.load('price_pipe.pkl')
+    prediction = list(model.predict(df))
+    print(prediction)
+   
+        
+
+             
+           
+             
+            
+    
+        
+     
+    
+    
+  
+   
+    
+    
