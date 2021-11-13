@@ -7,7 +7,7 @@ import numpy as np
 import joblib
 
 
-st.set_page_config(page_title='Predicting House Price with ML', page_icon = './favicon.png', layout = 'wide', initial_sidebar_state = 'auto')
+st.set_page_config(page_title='Predicting House Price with ML', page_icon = './favicon.ico.png', layout = 'wide', initial_sidebar_state = 'auto')
 
 
 st.markdown("<h1 style='text-align: center; color: black; display:block;'> Predicting House Price with ML</h1>", unsafe_allow_html=True)
