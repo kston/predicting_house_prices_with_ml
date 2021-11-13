@@ -29,3 +29,5 @@ For deployment, we use Heroku which is a platform as a service (PaaS) that enabl
 
 The deployed web app is live at http://housepricepredicbr.herokuapp.com/
 
+![image](https://user-images.githubusercontent.com/55413486/141661675-cece9685-aad2-4158-af5f-2b1f11e526ca.png)
+
