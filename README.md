@@ -24,3 +24,8 @@ We use stramlit to built the app frontend. Streamlit turns data scripts into sha
 All in Python. All for free. No front‑end experience required.
 
 For deployment, we use Heroku which is a platform as a service (PaaS) that enables developers to build, run, and operate applications entirely in the cloud.
+
+# APP
+
+The deployed web app is live at http://housepricepredicbr.herokuapp.com/
+
