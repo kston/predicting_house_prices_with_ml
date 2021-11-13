@@ -3,10 +3,16 @@ from datetime import date
 import pandas as pd
 import numpy as np
 
+
 import joblib
 
 
-st.title('Predicting House Price with ML')
+st.set_page_config(page_title='Predicting House Price with ML', page_icon = './favicon.png', layout = 'wide', initial_sidebar_state = 'auto')
+
+
+st.markdown("<h1 style='text-align: center; color: black; display:block;'> Predicting House Price with ML</h1>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
+
 
 # Sidebar components
 ## Sidebar Title
@@ -31,7 +37,7 @@ LotShape=st.sidebar.selectbox("General shape of property", LotShape_options)
 LandContour_options = ['Lvl', 'Low']
 LandContour=st.sidebar.selectbox("Flatness of the property", LandContour_options)
 
-LotConfig_options = ['Inside', 'Inside']
+LotConfig_options = ['Inside', 'Corner']
 LotConfig=st.sidebar.selectbox("Lot configuration", LotConfig_options)
 
 Neighborhood_options = { "Briardale" :'BrDale' , "Brookside" : 'BrkSide'}
@@ -42,7 +48,7 @@ GarageFinish_options = {'Finished': 'Fin', 'Rough Finished': 'RFn', 'Unfinished'
 GarageFinish = st.sidebar.selectbox("Interior finish of the garage", GarageFinish_options)
 
 
-PavedDrive_options = {'Paved': 'Y', 'Partial Pavement': 'P', 'Dirt/Gravel':'N'}
+PavedDrive_options = {'Paved': 'Y', 'Partial Pavement':'P', 'Dirt/Gravel':'N'}
 PavedDrive = st.sidebar.selectbox("Paved driveway", PavedDrive_options)
 
 
@@ -61,6 +67,8 @@ FireplaceQu_options =  ['Ex', 'Gd', 'TA', 'Fa', 'Po']
 FireplaceQu = st.sidebar.selectbox("Fireplace quality", FireplaceQu_options)
 
 
+
+
 st.sidebar.markdown("<hr>", unsafe_allow_html=True)
 
 ## Numerical Features
@@ -75,9 +83,12 @@ OverallQual = st.sidebar.slider('Rates the overall material and finish of the ho
 
 OverallCond = st.sidebar.slider('Rates the overall condition of the house', 0, 10, 1)
 
-YearBuilt = st.sidebar.slider('Original construction date', min_value = 1921, max_value = 2021, step= 1 )
+YearRemodAdd =  st.sidebar.slider('Remodel date (same as construction date if no remodeling or additions)', min_value = 1921, max_value = 2021, step= 1 )
+
 
 TotRmsAbvGrd = st.sidebar.slider('Total rooms above grade (does not include bathrooms)', 0, 20, 1)
+
+HalfBath = st.sidebar.slider('Half baths above grade', 0, 20, 1)
 
 
 WoodDeckSF = st.sidebar.slider('Wood deck area in square feet', 0, 100,1)
@@ -106,7 +117,7 @@ div.stButton > button:first-child {
 submit = st.sidebar.button("Predict")
 
 if submit:
-    st.success("Prediction Done")
+   
     features = [
         MSSubClass,
         MSZoning,
@@ -117,15 +128,19 @@ if submit:
         GarageFinish,
         PavedDrive,
         SaleCondition,
+        KitchenQual,
         FireplaceQu,
         LotFrontage,
         OverallQual,
         OverallCond,
-        YearBuilt,
+        YearRemodAdd,
         TotRmsAbvGrd,
+        HalfBath,
         WoodDeckSF,
         ScreenPorch,
-        YrSold    
+        YrSold
+
+           
     ]
     
     head = [
@@ -138,15 +153,17 @@ if submit:
         'GarageFinish',
         'PavedDrive',
         'SaleCondition',
+        'KitchenQual',
         'FireplaceQu',
         'LotFrontage',
         'OverallQual',
         'OverallCond',
-        'YearBuilt',
+        'YearRemodAdd',
         'TotRmsAbvGrd',
+        'HalfBath',
         'WoodDeckSF',
         'ScreenPorch',
-        'YrSold'    
+        'YrSold'
     ]
     
     df=pd.DataFrame(features).transpose()
@@ -158,17 +175,20 @@ if submit:
     st.markdown("<h3 style='text-align: center; color: black; display:block;'> Predicted Price</h3>", unsafe_allow_html=True)
     
     # tranform categorical data
-    def transform_categorical(list):
+    def transform_categorical(list, df):
         for feature in list:
             dict_key = globals()[f'{feature}_options']
             df[feature] = dict_key[df[feature].values[0]]
-           
-    transform_categorical(['MSSubClass', 'MSZoning', 'GarageFinish', 'PavedDrive', 'SaleCondition'])       
+            return df
         
     model = joblib.load('price_pipe.pkl')
-    prediction = list(model.predict(df))
-    print(prediction)
-   
+    prediction = model.predict(df)
+    price = np.round(np.exp(prediction),2)
+    
+    st.markdown(f"<p style='text-align: center; color: black;'> The predicted price is $ {price[0]} </p>", unsafe_allow_html=True)
+    st.markdown("<hr>", unsafe_allow_html=True)
+
+  
         
 
              
